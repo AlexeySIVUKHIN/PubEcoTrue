@@ -1,0 +1,18 @@
+{% extends 'appeal/base.html' %}
+ 
+{% block content %}
+ 
+<h1>{{post.title}}</h1>
+ 
+{% if post.photo %}
+<p><img class="img-article-left" src="{{post.photo.url}}"></p>
+{% endif %}
+{% if post.photo_2nd %}
+<p><img class="img-article-left" src="{{post.photo_2nd.url}}"></p>
+{% endif %}
+{% if post.photo_3rd %}
+<p><img class="img-article-left" src="{{post.photo_3rd.url}}"></p>
+{% endif %}
+ 
+{{post.text|linebreaks}}
+{% endblock %}

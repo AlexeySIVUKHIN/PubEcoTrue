@@ -1,0 +1,11 @@
+# 404.html
+{% extends "base.html" %}
+
+{% block subtitle %}Недостаточно прав{% endblock %}
+{% block meta %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+    <h2>Недостаточно прав</h2>
+    <p>Для просмотра данной страницы, пожалуйста, авторизуйтесь и войдите в свою учётную запись!</p>
+    <p>Возврат на <a href="/">главную страницу</a></p>
+{% endblock %}
