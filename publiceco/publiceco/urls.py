@@ -8,6 +8,7 @@ from publiceco import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('appeal.urls')),
+    path('', include('django_prometheus.urls')),
 ]
 
 handler404 = pageNotFound

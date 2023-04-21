@@ -15,7 +15,8 @@ urlpatterns = [
     path('articles/<slug:articles_slug>/', show_articles, name='articles'),
     path('register/', RegisterUser.as_view(), name='register'),
     path('logout/', logout_user, name='logout'),
-
+    path('api/v1/sensorlist/', SensorDataView.as_view({'post': 'create', 'get': 'list'}), name='sensorlist'),
+    path('4664744/', SensorDataLastList.as_view(), name='4664744'),
 ]
 
 handler404 = pageNotFound

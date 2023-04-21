@@ -30,3 +30,17 @@ class ArticlesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(articles, ArticlesAdmin)
+
+# class SensorDataAdmin(admin.ModelAdmin):
+#     list_display = ('id', )
+#     list_display_links = ('id', )
+#     search_fields = ('id', )
+#
+# admin.site.register(SensorData, SensorDataAdmin)
+
+class SensorDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'timestamp')
+    list_display_links = ('id', 'timestamp')
+    search_fields = ('id', 'timestamp')
+
+admin.site.register(SensorData2, SensorDataAdmin)

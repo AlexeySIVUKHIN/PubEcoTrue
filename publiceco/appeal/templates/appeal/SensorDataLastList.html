@@ -1,0 +1,18 @@
+{% extends 'appeal/base.html' %}
+
+{% block content %}
+
+<ul class="list-articles">
+	{% for p in SensorDataLastList %}
+		<li><div class="article-panel">
+        <p class="last">Время замера: {{p.timestamp|date:"d-m-Y H+3:i:s"}}</p> <br>
+         <p class="last">PM 2.5 (мкг/м.куб): {{p.SDS_P2}}</p> <br>
+         <p class="last">PM 10 (мкг/м.куб): {{p.SDS_P1}}</p> <br>
+         <p class="last">Давление (hPa): {{p.BME280_pressure}}</p> <br>
+         <p class="last">Влажность (%): {{p.BME280_humidity}}</p> <br>
+         <p class="last">Температура (C): {{p.BME280_temperature}}</p> <br>
+</div>
+
+	{% endfor %}
+</ul>
+{% endblock %}

@@ -5,16 +5,22 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 from .forms import *
 from .models import *
 from django.urls import reverse, reverse_lazy
+
+from .permissions import IsAdminOrReadOnly
+from .serializers import SensorDataSerializer
 from .utils import DataMixin
+from rest_framework import generics, status
 
 menu = [
         {'title': "Новости", 'url_name': 'news'},
         {'title': "Статьи", 'url_name': 'articles'},
         {'title': "Оставить обращение", 'url_name': 'add_appeal'},
-        {'title': "О Корпусе", 'url_name': 'about'},
+        {'title': "Состояние атмосферы", 'url_name': 'about'},
 ]
 
 def index(request):
@@ -29,10 +35,13 @@ def pageNotFound(request, exception):
     return render(request, 'appeal/404.html', {'menu': menu, 'title': 'Страница не найдена'})
 
 def permissionDenied(request, exception):
-    return render(request, 'appeal/403.html', {'menu': menu, 'title': 'Недостаотчно прав'})
+    return render(request, 'appeal/403.html', {'menu': menu, 'title': 'Недостаточно прав'})
 
 def About(request):
-    return render(request, 'appeal/about.html', {'menu': menu, 'title': 'О корпусе'})
+    return render(request, 'appeal/about.html', {'menu': menu, 'title': 'Состояние атмосферы'})
+
+def Sensor1(request):
+    return render(request, 'appeal/sensor1.html', {'menu': menu, 'title': 'Улица Громобоя, Иваново'})
 
 class NewsList(ListView):
     paginate_by = 4
@@ -132,3 +141,48 @@ def show_articles(request, articles_slug):
     }
     return render(request, 'appeal/post.html', context=context)
 
+
+
+from rest_framework import viewsets
+from rest_framework.response import Response
+from .serializers import SensorDataSerializer
+
+
+class SensorDataView(viewsets.ViewSet):
+    serializer_class = SensorDataSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def create(self, request):
+        data = request.data
+        sensordatavalues = data.get('sensordatavalues')
+        sensor_data = {}
+
+        for value in sensordatavalues:
+            value_type = value.get('value_type')
+            value = value.get('value')
+            sensor_data[value_type] = value
+        sensor_data["esp8266id"] = data.get('esp8266id')
+        serializer = self.serializer_class(data=sensor_data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+    def list(self, request):
+        sensor_data = SensorData2.objects.all()
+        serializer = self.serializer_class(sensor_data, many=True)
+        return Response(serializer.data)
+
+class SensorDataLastList(ListView):
+    paginate_by = 4
+    model = SensorData2
+    template_name = 'appeal/SensorDataLastList.html'
+    context_object_name = 'SensorDataLastList'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Последние значения'
+        context['menu'] = menu
+        return context
+
+    def get_queryset(self):
+        return SensorData2.objects.all()
