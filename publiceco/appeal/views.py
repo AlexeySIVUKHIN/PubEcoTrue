@@ -1,12 +1,13 @@
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
+from datetime import datetime
 from .forms import *
 from .models import *
 from django.urls import reverse, reverse_lazy
@@ -186,3 +187,75 @@ class SensorDataLastList(ListView):
 
     def get_queryset(self):
         return SensorData2.objects.all()
+
+
+
+from django.db.models import Avg
+from django.utils import timezone
+from django.shortcuts import render
+from .models import SensorData2
+
+
+def sensor_data_latest(request):
+    # получение последних 10 записей из базы данных
+    latest_data = SensorData2.objects.all().order_by('-timestamp')[:10]
+
+    # получение средних значений за сутки
+    today = timezone.now().date()
+    today_data = SensorData2.objects.filter(timestamp__date=today)
+    avg_today = today_data.aggregate(
+        avg_temp=Avg('BME280_temperature'),
+        avg_pressure=Avg('BME280_pressure'),
+        avg_humidity=Avg('BME280_humidity'),
+        avg_P1=Avg('SDS_P1'),
+        avg_P2=Avg('SDS_P2')
+    )
+
+    # получение средних значений за последний месяц
+    last_month = timezone.now().date() - timezone.timedelta(days=30)
+    last_month_data = SensorData2.objects.filter(timestamp__gte=last_month)
+    avg_last_month = last_month_data.aggregate(
+        avg_temp=Avg('BME280_temperature'),
+        avg_pressure=Avg('BME280_pressure'),
+        avg_humidity=Avg('BME280_humidity'),
+        avg_P1=Avg('SDS_P1'),
+        avg_P2=Avg('SDS_P2')
+    )
+
+    context = {
+        'latest_data': latest_data,
+        'avg_today': avg_today,
+        'avg_last_month': avg_last_month,
+        'menu': menu,
+    }
+
+    return render(request, 'appeal/sensor_data_latest.html', context)
+
+def data_view(request):
+    if request.method == 'POST':
+        date_str = request.POST.get('date')
+        try:
+            date = datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            return render(request, 'appeal/error.html', {'message': 'Invalid date format'})
+        data = SensorData2.objects.filter(timestamp__date=date).order_by('-timestamp')
+
+
+        today_data = SensorData2.objects.filter(timestamp__date=date)
+        avg_today = today_data.aggregate(
+            avg_temp=Avg('BME280_temperature'),
+            avg_pressure=Avg('BME280_pressure'),
+            avg_humidity=Avg('BME280_humidity'),
+            avg_P1=Avg('SDS_P1'),
+            avg_P2=Avg('SDS_P2')
+        )
+
+        return render(request, 'appeal/sensor_data.html', {
+            'data': data,
+            'avg_today': avg_today,
+            'date': date,
+            'menu': menu,
+        })
+    return render(request, 'appeal/data_view.html', {'menu': menu, 'title': 'Выбор даты'})
+
+

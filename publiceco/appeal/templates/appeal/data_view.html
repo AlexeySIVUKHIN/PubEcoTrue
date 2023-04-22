@@ -1,0 +1,11 @@
+{% extends 'appeal/base.html' %}
+
+{% block content %}
+  <h1>View Sensor Data</h1>
+  <form method="post">
+    {% csrf_token %}
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date">
+    <input type="submit" value="Submit">
+  </form>
+{% endblock %}

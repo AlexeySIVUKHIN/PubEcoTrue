@@ -48,6 +48,17 @@ p.link-read-post a {
 	text-decoration: none;
 }
 
+table-sensor {
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table-sensor, th-sensor, td-sensor {
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
 div.article-panel {
     background: #eee;
     padding: 5px 10px 5px 10px;

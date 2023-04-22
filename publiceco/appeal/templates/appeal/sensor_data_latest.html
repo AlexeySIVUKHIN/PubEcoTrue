@@ -1,0 +1,93 @@
+{% extends 'appeal/base.html' %}
+
+
+{% block content %}
+
+<style>
+table {
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table, th, td{
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
+</style>
+
+  <h1>Данные с датчика</h1>
+
+  <h2>Средние значения за сегодня</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Temperature</th>
+        <th>Pressure</th>
+        <th>Humidity</th>
+        <th>SDS P1</th>
+        <th>SDS P2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ avg_today.avg_temp|floatformat:2 }}</td>
+        <td>{{ avg_today.avg_pressure|floatformat:2 }}</td>
+        <td>{{ avg_today.avg_humidity|floatformat:2 }}</td>
+        <td>{{ avg_today.avg_P1|floatformat:2 }}</td>
+        <td>{{ avg_today.avg_P2|floatformat:2 }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Средние значения за последний месяц</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Temperature</th>
+        <th>Pressure</th>
+        <th>Humidity</th>
+        <th>SDS P1</th>
+        <th>SDS P2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ avg_last_month.avg_temp|floatformat:2 }}</td>
+        <td>{{ avg_last_month.avg_pressure|floatformat:2 }}</td>
+        <td>{{ avg_last_month.avg_humidity|floatformat:2 }}</td>
+        <td>{{ avg_last_month.avg_P1|floatformat:2 }}</td>
+        <td>{{ avg_last_month.avg_P2|floatformat:2 }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2>Последние 10 измерений</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>ESP8266 ID</th>
+        <th>BME280 Temperature</th>
+        <th>BME280 Pressure</th>
+        <th>BME280 Humidity</th>
+        <th>SDS P1</th>
+        <th>SDS P2</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for data in latest_data %}
+        <tr>
+          <td>{{ data.timestamp }}</td>
+          <td>{{ data.esp8266id }}</td>
+          <td>{{ data.BME280_temperature }}</td>
+          <td>{{ data.BME280_pressure }}</td>
+          <td>{{ data.BME280_humidity }}</td>
+          <td>{{ data.SDS_P1 }}</td>
+          <td>{{ data.SDS_P2 }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

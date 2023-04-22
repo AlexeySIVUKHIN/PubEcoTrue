@@ -17,6 +17,8 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('api/v1/sensorlist/', SensorDataView.as_view({'post': 'create', 'get': 'list'}), name='sensorlist'),
     path('4664744/', SensorDataLastList.as_view(), name='4664744'),
+    path('sensor-data-latest/', sensor_data_latest, name='sensor_data_latest'),
+    path('data/', data_view, name='data_view'),
 ]
 
 handler404 = pageNotFound

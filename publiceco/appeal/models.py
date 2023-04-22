@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
-from django_prometheus.models import ExportModelOperationsMixin
+from django.utils import timezone
+import pytz
 class appeal(models.Model):
     name = models.CharField(max_length=255, verbose_name='ФИО')
     city = models.CharField(max_length=255, verbose_name='Ваш населённый пункт')
@@ -101,15 +102,19 @@ class articles(models.Model):
 
 class SensorData2(models.Model):
     esp8266id = models.PositiveIntegerField()
-    SDS_P1 = models.DecimalField(max_digits=5, decimal_places=2)
-    SDS_P2 = models.DecimalField(max_digits=5, decimal_places=2)
-    BME280_temperature = models.DecimalField(max_digits=5, decimal_places=2)
+    SDS_P1 = models.DecimalField(max_digits=8, decimal_places=2)
+    SDS_P2 = models.DecimalField(max_digits=8, decimal_places=2)
+    BME280_temperature = models.DecimalField(max_digits=8, decimal_places=2)
     BME280_pressure = models.DecimalField(max_digits=8, decimal_places=2)
-    BME280_humidity = models.DecimalField(max_digits=5, decimal_places=2)
+    BME280_humidity = models.DecimalField(max_digits=8, decimal_places=2)
     samples = models.PositiveIntegerField()
     min_micro = models.PositiveIntegerField()
     max_micro = models.PositiveIntegerField()
     interval = models.PositiveIntegerField()
     signal = models.IntegerField()
-    timestamp = models.DateTimeField(auto_now=True, verbose_name='Время')
+    timestamp = models.DateTimeField(verbose_name='Время', default=timezone.now)
 
+    def save(self, *args, **kwargs):
+        # Устанавливаем временную зону
+        timezone.activate(pytz.timezone("Europe/Moscow"))
+        super().save(*args, **kwargs)
