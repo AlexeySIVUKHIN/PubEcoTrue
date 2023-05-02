@@ -115,6 +115,5 @@ class SensorData2(models.Model):
     timestamp = models.DateTimeField(verbose_name='Время', default=timezone.now)
 
     def save(self, *args, **kwargs):
-        # Устанавливаем временную зону
         timezone.activate(pytz.timezone("Europe/Moscow"))
         super().save(*args, **kwargs)

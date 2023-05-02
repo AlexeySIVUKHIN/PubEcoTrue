@@ -1,3 +1,4 @@
+import numpy as np
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
@@ -11,7 +12,9 @@ from datetime import datetime
 from .forms import *
 from .models import *
 from django.urls import reverse, reverse_lazy
-
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 from .permissions import IsAdminOrReadOnly
 from .serializers import SensorDataSerializer
 from .utils import DataMixin
@@ -194,8 +197,8 @@ from django.db.models import Avg
 from django.utils import timezone
 from django.shortcuts import render
 from .models import SensorData2
-
-
+from io import BytesIO
+import base64
 def sensor_data_latest(request):
     # получение последних 10 записей из базы данных
     latest_data = SensorData2.objects.all().order_by('-timestamp')[:10]
@@ -210,6 +213,36 @@ def sensor_data_latest(request):
         avg_P1=Avg('SDS_P1'),
         avg_P2=Avg('SDS_P2')
     )
+
+    # получение данных для построения графиков
+    plot_data_25 = []
+    plot_data_10 = []
+    plot_data_time = []
+    for t in today_data:
+        plot_data_25.append(t.SDS_P2)
+        plot_data_10.append(t.SDS_P1)
+        plot_data_time.append(t.timestamp)
+
+    pd25 = np.array(plot_data_25)
+    pd10 = np.array(plot_data_10)
+    pdt = np.array(plot_data_time)
+    plt.plot(pdt, pd25)
+
+    plt.plot(pdt, pd25)
+    plt.xlabel('Time')
+    plt.ylabel('PM 2.5')
+    plt.title('PM 2.5 for Today')
+
+    # сохранение графика в виде изображения
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+
+    # преобразование изображения в строку base64
+    graphic = base64.b64encode(image_png).decode('utf-8')
+    image = 'data:image/png;base64,{}'.format(graphic)
 
     # получение средних значений за последний месяц
     last_month = timezone.now().date() - timezone.timedelta(days=30)
@@ -227,6 +260,7 @@ def sensor_data_latest(request):
         'avg_today': avg_today,
         'avg_last_month': avg_last_month,
         'menu': menu,
+        'image': image,
     }
 
     return render(request, 'appeal/sensor_data_latest.html', context)

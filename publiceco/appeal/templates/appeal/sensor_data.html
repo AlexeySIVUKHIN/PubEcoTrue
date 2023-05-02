@@ -13,21 +13,19 @@ table, th, td{
     text-align: center;
     padding: 10px;
 }
-
 </style>
 
+  <h1>Измерения за {{ date|date:"Y-m-d" }}</h1>
 
-  <h1>Data for {{ date|date:"Y-m-d" }}</h1>
-
-  <h2>Average Values Today</h2>
+  <h2>Средние значения за сутки</h2>
   <table>
     <thead>
       <tr>
-        <th>Temperature</th>
-        <th>Pressure</th>
-        <th>Humidity</th>
-        <th>SDS P1</th>
-        <th>SDS P2</th>
+        <th>Температура (Цельсия)</th>
+        <th>Давление (hPa)</th>
+        <th>Влажность (%)</th>
+        <th>PM 10 мкм (мкг/м.куб.)</th>
+        <th>PM 2.5 мкм (мкг/м.куб.)</th>
       </tr>
     </thead>
     <tbody>
@@ -40,18 +38,18 @@ table, th, td{
       </tr>
     </tbody>
   </table>
-
+  <h2>Все значения за сутки</h2>
   <table>
 
     <thead>
       <tr>
         <th>ESP8266 ID</th>
-        <th>BME280 Temperature</th>
-        <th>BME280 Pressure</th>
-        <th>BME280 Humidity</th>
-        <th>SDS P1</th>
-        <th>SDS P2</th>
-        <th>Timestamp</th>
+        <th>Температура (Цельсия)</th>
+        <th>Давление (hPa)</th>
+        <th>Влажность (%)</th>
+        <th>PM 10 мкм (мкг/м.куб.)</th>
+        <th>PM 2.5 мкм (мкг/м.куб.)</th>
+        <th>ВРемя замера</th>
       </tr>
     </thead>
     <tbody>

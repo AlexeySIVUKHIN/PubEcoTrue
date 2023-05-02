@@ -17,17 +17,19 @@ table, th, td{
 
 </style>
 
-  <h1>Данные с датчика</h1>
-
+  <h1>Громобоя, 27 (Иваново)</h1>
+{% if image %}
+    <img src="{{ image }}" alt="Graph">
+{% endif %}
   <h2>Средние значения за сегодня</h2>
   <table>
     <thead>
       <tr>
-        <th>Temperature</th>
-        <th>Pressure</th>
-        <th>Humidity</th>
-        <th>SDS P1</th>
-        <th>SDS P2</th>
+        <th>Температура (Цельсия)</th>
+        <th>Давление (hPa)</th>
+        <th>Влажность (%)</th>
+        <th>PM 10 мкм (мкг/м.куб.) (норма до 50)</th>
+        <th>PM 2.5 мкм (мкг/м.куб.) (норма до 25)</th>
       </tr>
     </thead>
     <tbody>
@@ -45,11 +47,11 @@ table, th, td{
   <table>
     <thead>
       <tr>
-        <th>Temperature</th>
-        <th>Pressure</th>
-        <th>Humidity</th>
-        <th>SDS P1</th>
-        <th>SDS P2</th>
+        <th>Температура (Цельсия)</th>
+        <th>Давление (hPa)</th>
+        <th>Влажность (%)</th>
+        <th>PM 10 мкм (мкг/м.куб.)</th>
+        <th>PM 2.5 мкм (мкг/м.куб.)</th>
       </tr>
     </thead>
     <tbody>
@@ -66,13 +68,13 @@ table, th, td{
   <table>
     <thead>
       <tr>
-        <th>Timestamp</th>
+        <th>Время замера</th>
         <th>ESP8266 ID</th>
-        <th>BME280 Temperature</th>
-        <th>BME280 Pressure</th>
-        <th>BME280 Humidity</th>
-        <th>SDS P1</th>
-        <th>SDS P2</th>
+        <th>Температура (Цельсия)</th>
+        <th>Давление (hPa)</th>
+        <th>Влажность (%)</th>
+        <th>PM 10 мкм (мкг/м.куб.)</th>
+        <th>PM 2.5 мкм (мкг/м.куб.)</th>
       </tr>
     </thead>
     <tbody>
